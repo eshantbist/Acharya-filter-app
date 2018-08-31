@@ -1,44 +1,43 @@
 import React,{Component} from 'react';
 import {connect} from 'react-redux';
-import {selectedAcharya} from '../actions/selected_acharya';
-import {bindActionCreators} from 'redux';
 
 class AcharyaList extends Component{
 
 	renderlist(){
-		console.log(this.props.displayacharyas);
 
-		return this.props.displayacharyas.map((list)=>
-			list.acharyas.map((acharya)=>{
+		if(this.props.displayacharyas == undefined)
+		return;
+      return this.props.displayfilteredacharyas.map((acharya)=>{
+				const imageUrl=`https://d1dyr7ljeznkdv.cloudfront.net/wp-content/uploads/acharya_images/${acharya.image}`;
 				return(
 						<li 
-						onClick={()=>this.props.displayselectedacharya(acharya)}
-						className="list-group-item" key={acharya.id}>
-						{acharya.last_name}
+						className="list-group-item col-md-12" key={acharya.id}>
+							<img src={imageUrl} className="col-md-3"/>
+							<div>Name:  {acharya.salutation} {acharya.last_name}</div>
+							<div>Mail: {acharya.email}</div>
+							<div>City:  {acharya.city}</div>
+							<div>Phone:  {acharya.phone}</div>
 						</li>
 				)
-			})
+			}
 		);
 	}
 
 	render(){
 		return(
-			<div className="col-sm-3">
-				<h4>Acharyas List</h4>
-				<ul className="list-group">{this.renderlist()}</ul>
-			</div>	
+			
+				<ul className="list-group">{this.renderlist()}</ul>	
 		);
 	}
 }
 
 function mapStateToProps(state){
-
-	return{displayacharyas:state.acharyas};
+	if(state.acharyas.acharyas == undefined)
+			return {};
+	
+	return{displayacharyas:state.acharyas.acharyas,displayfilteredacharyas:state.cityfilter};
 }
 
-function mapDispatchToProps(dispatch){
-	return bindActionCreators({displayselectedacharya:selectedAcharya},dispatch);
-}
 
 
-export default connect(mapStateToProps,mapDispatchToProps)(AcharyaList);
+export default connect(mapStateToProps)(AcharyaList);
